@@ -15,8 +15,10 @@
 pub mod client;
 pub mod compat;
 pub mod driver;
+pub mod open;
 pub mod error;
 pub mod types;
 
 pub use client::Client;
+pub use open::{OpenClient, OpenCreds};
 pub use error::{Error, Result};

@@ -74,3 +74,40 @@ data  = AES-128-CBC(urlencode(sorted(payload)))
 ## 许可
 
 MIT
+
+
+## Open API (115 开放平台)
+
+除 cookie 驱动外, 还实现了 `proapi.115.com/open/*` 的 Open API 客户端:
+
+```rust
+use driver115::{OpenClient, OpenCreds};
+
+// 凭证由调用方传入, 本库不内置 app_id / token
+let creds = OpenCreds {
+    app_id: Some(你的_app_id),
+    access_token: 你的_access_token.into(),
+    refresh_token: 你的_refresh_token.into(),
+    ..Default::default()
+};
+let api = OpenClient::new(creds);
+let files = api.fs_files("0", 100, 0).await?;
+let hits = api.fs_search("关键词", "0", 100, 0).await?;
+```
+
+覆盖的接口:
+
+| 分类 | 方法 |
+|---|---|
+| 认证 | 设备码二维码 / 扫码换 token / 刷新 token（PKCE, verifier 默认 64 个 0） |
+| 文件 | 列目录 / 搜索 / 目录信息 / 移动 / 复制 / 删除 / 改名 / 下载直链 |
+| 离线 | 添加 URL / 添加 BT / 任务列表 / 配额 / 删除 / 清空 |
+| 回收站 | 列表 / 删除 / 还原 |
+| 上传 | init / get_token |
+| 其他 | 视频播放 / 字幕 / VIP 二维码 |
+
+**没有 appid/token 也能编译和使用全部接口**: 构造 `OpenCreds::default()` 即可,
+请求会发到 115 服务端并原样返回鉴权错误, 方便调试与对接自己的开放平台应用。
+
+示例: `cargo run --example open`
+
