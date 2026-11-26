@@ -1144,18 +1144,6 @@ pub async fn upload_init(
     }
 }
 
-fn percent_encode_bytes(b: &[u8]) -> String {
-    let mut out = String::with_capacity(b.len() * 3);
-    for x in b {
-        match *x {
-            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
-                out.push(*x as char)
-            }
-            _ => out.push_str(&format!("%{:02X}", x)),
-        }
-    }
-    out
-}
 
 // ===================== 真实上传(3.0 凭证 + OSS POST + 115 回调登记) =====================
 
